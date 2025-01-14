@@ -1,17 +1,24 @@
 import datetime
-from textblob import TextBlob
 import tkinter as tk
 from tkinter import messagebox
+from nltk.sentiment import SentimentIntensityAnalyzer
+import nltk
+
+# Ensure VADER is available
+nltk.download("vader_lexicon")
+
+# Initialize SentimentIntensityAnalyzer
+sia = SentimentIntensityAnalyzer()
 
 def analyze_sentiment(journal_entry):
     # Perform sentiment analysis
-    analysis = TextBlob(journal_entry)
-    polarity = analysis.sentiment.polarity
+    sentiment_scores = sia.polarity_scores(journal_entry)
+    compound_score = sentiment_scores["compound"]
 
     # Classify sentiment
-    if polarity > 0:
+    if compound_score > 0.05:
         return "Positive 😊"
-    elif polarity < 0:
+    elif compound_score < -0.05:
         return "Negative 😢"
     else:
         return "Neutral 😐"
